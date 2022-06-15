@@ -8,6 +8,7 @@ class Skills(models.Model):
     count = models.CharField(max_length=30, null=True)
 
 
+
     def __str__(self):
         return self.name
 
@@ -15,7 +16,7 @@ class Cities(models.Model):
     name = models.CharField(max_length=30)
     percent = models.CharField(max_length=30)
     count = models.CharField(max_length=30, null=True)
-
+    image = models.ImageField(upload_to='coat', null=True, blank=True)
 
     def __str__(self):
         return self.name
