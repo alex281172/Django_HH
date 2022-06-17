@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Создание навыка
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-8 col-md-10 mx-auto">
+        <p>Создание/редактирование навыка на CBV</p>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h3> {{ form.as_p }} </h3>
+
+
+            <button type="submit" class="btn btn-primary" id="sendMessageButton">СОХРАНИТЬ</button>
+            <a type="submit" class="btn btn-primary" href="{% url 'parser:skill_list' %}">ОТМЕНА</a>
+        </form>
+
+    </div>
+</div>
+
+
+{% endblock %}

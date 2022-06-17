@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Список городов
+{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for item in object_list %}
+
+            <li>
+                <a href="{% url 'parser:city_list_detail' pk=item.pk %}">
+                    <h2>
+                        {{item.name}}
+                    <h5>
+                    <a href="{% url 'parser:city_list_update' pk=item.pk %}">
+                            Изменить
+                    </a>
+                        /
+                    <a href="{% url 'parser:city_list_delete' pk=item.pk %}">
+                            Удалить
+
+                    </a>
+                    </h5>
+                    </h2>
+
+
+
+
+            </li>
+        {% endfor %}
+
+        <a type="submit" class="btn btn-primary" href="{% url 'parser:city_list_create' %}">Создать</a>
+
+
+    </ul>
+
+{% endblock %}
