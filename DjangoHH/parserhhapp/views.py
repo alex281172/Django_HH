@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -18,7 +20,7 @@ def main_view(request):
 # если да проверка на валидность, если норм, то заполнение данными если нет,
 # то отрисока пустой формы
 
-
+@login_required
 def create_pars(request):
     if request.method == 'POST':
         # form = RequestForm(request.POST)
@@ -47,7 +49,7 @@ def data_return(request, id):
     data = get_object_or_404(Skills, id=id)
     return render(request, 'parserhhapp/post.html', context={'data': data})
 
-
+@user_passes_test(lambda u: u.is_superuser)
 def create_post(request):
     if request.method == 'GET':
         form = PostForm()
@@ -61,57 +63,57 @@ def create_post(request):
             return render(request, 'parserhhapp/posts.html', context={'form': form})
 
 
-class SkillListView(ListView):
+class SkillListView(LoginRequiredMixin, ListView):
     model = Skills
     template_name = 'parserhhapp/skill_list.html'
 
-class SkillDetailView(DetailView):
+class SkillDetailView(LoginRequiredMixin, DetailView):
     model = Skills
     template_name = 'parserhhapp/skill_list_detail.html'
 
 
-class SkillCreateView(CreateView):
+class SkillCreateView(LoginRequiredMixin, CreateView):
     fields = '__all__'
     model = Skills
     success_url = reverse_lazy('parser:skill_list')
     template_name = 'parserhhapp/skill_list_create.html'
 
 
-class SkillUpdateView(UpdateView):
+class SkillUpdateView(LoginRequiredMixin, UpdateView):
     fields = '__all__'
     model = Skills
     success_url = reverse_lazy('parser:skill_list')
     template_name = 'parserhhapp/skill_list_create.html'
 
-class SkillDeleteView(DeleteView):
+class SkillDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'parserhhapp/skill_list_delete_confirm.html'
     model = Skills
     success_url = reverse_lazy('parser:skill_list')
 
 
 
-class CityListView(ListView):
+class CityListView(LoginRequiredMixin, ListView):
     model = Cities
     template_name = 'parserhhapp/city_list.html'
 
 
-class CityDetailView(DetailView):
+class CityDetailView(LoginRequiredMixin, DetailView):
     model = Cities
     template_name = 'parserhhapp/city_list_detail.html'
 
-class CityCreateView(CreateView):
+class CityCreateView(LoginRequiredMixin, CreateView):
     fields = '__all__'
     model = Cities
     success_url = reverse_lazy('parser:city_list')
     template_name = 'parserhhapp/city_list_create.html'
 
-class CityUpdateView(UpdateView):
+class CityUpdateView(LoginRequiredMixin, UpdateView):
     fields = '__all__'
     model = Cities
     success_url = reverse_lazy('parser:city_list')
     template_name = 'parserhhapp/city_list_create.html'
 
-class CityDeleteView(DeleteView):
+class CityDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'parserhhapp/city_list_delete_confirm.html'
     model = Cities
     success_url = reverse_lazy('parser:city_list')
