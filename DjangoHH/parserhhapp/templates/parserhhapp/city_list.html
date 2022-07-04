@@ -12,16 +12,16 @@
                 <a href="{% url 'parser:city_list_detail' pk=item.pk %}">
                     <h2>
                         {{item.name}}
-                    <h5>
-                    <a href="{% url 'parser:city_list_update' pk=item.pk %}">
-                            Изменить
-                    </a>
-                        /
-                    <a href="{% url 'parser:city_list_delete' pk=item.pk %}">
-                            Удалить
+                        <h5>
+                            <a href="{% url 'parser:city_list_update' pk=item.pk %}">
+                                    Изменить
+                            </a>
+                            /
+                            <a href="{% url 'parser:city_list_delete' pk=item.pk %}">
+                                    Удалить
 
-                    </a>
-                    </h5>
+                            </a>
+                        </h5>
                     </h2>
 
 
@@ -29,8 +29,31 @@
 
             </li>
         {% endfor %}
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a class="btn btn-primary float-right"
+                            href="?page=1">&laquo; Первая</a>
+                    <a class="btn btn-primary float-right"
+                            href="?page={{ page_obj.previous_page_number }}">&larr; Назад</a>
+                {% endif %}
 
-        <a type="submit" class="btn btn-primary" href="{% url 'parser:city_list_create' %}">Создать</a>
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a class="btn btn-primary float-right"
+                            href="?page={{ page_obj.next_page_number }}">Вперед &rarr;</a>
+                    <a class="btn btn-primary float-right"
+                            href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+
+
+    <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="{% url 'parser:city_list_create' %}">Создать</a></div>
+
 
 
     </ul>

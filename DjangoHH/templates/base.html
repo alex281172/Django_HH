@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load str_extensions %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -54,7 +54,8 @@
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
                         <div class="site-heading">
-                            <h1>ПАРСЕР HH.RU</h1>
+                            <h1>Парсер HH</h1>
+                            <h2>{{title|capitalize}}</h2>
                             <span class="subheading"></span>
                         </div>
                     </div>
@@ -98,7 +99,8 @@
                                 </a>
                             </li>
                         </ul>
-                        <div class="small text-center text-muted fst-italic">Copyright &copy; Your Website 2022</div>
+                        <div class="small text-center text-muted fst-italic">{{my_text}}</div>
+                        <div class="small text-center text-muted fst-italic">{{user.username}}</div>
                     </div>
                 </div>
             </div>

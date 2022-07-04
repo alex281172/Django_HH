@@ -6,15 +6,45 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from parserhhapp.models import Cities, Skills
 from parserhhapp.forms import RequestForm, PostForm
 from parserhhapp.parser_site import parser_site
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 # Create your views here
 def main_view(request):
-    cities = Cities.objects.all()
     skills = Skills.objects.all()
-    return render(request, 'parserhhapp/index.html', context={'cities': cities, 'skills': skills})
+    paginator = Paginator(skills, 5)
 
+    page = request.GET.get('page')
+    try:
+        skills = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        skills = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        skills = paginator.page(paginator.num_pages)
 
+    title = 'навыки'
+
+    return render(request, 'parserhhapp/index.html', context={'skills': skills, 'title': title})
+
+def city_return(request):
+    cities = Cities.objects.all()
+    paginator_city = Paginator(cities, 5)
+
+    page = request.GET.get('page')
+    try:
+        cities = paginator_city.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        cities = paginator_city.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        cities = paginator_city.page(paginator_city.num_pages)
+
+    title = 'города'
+
+    return render(request, 'parserhhapp/citycoat.html', context={'cities': cities, 'title': title})
 #создание формы
 # получение данных если запрос POST, если нет, то отрисовка снова пустой формы,
 # если да проверка на валидность, если норм, то заполнение данными если нет,
@@ -34,26 +64,26 @@ def create_pars(request):
             return HttpResponseRedirect(reverse('parser:result'))
 
         else:
-            return render(request, 'parserhhapp/create.html', context={'form': form})
+            title = '5'
+            return render(request, 'parserhhapp/create.html', context={'form': form, 'title': title})
     else:
         form = RequestForm()
-        return render(request, 'parserhhapp/create.html', context={'form': form})
+        title = 'запрос'
+        return render(request, 'parserhhapp/create.html', context={'form': form, 'title': title})
 
-
-def city_return(request):
-    cities = Cities.objects.all()
-    return render(request, 'parserhhapp/citycoat.html', context={'cities': cities})
 
 
 def data_return(request, id):
     data = get_object_or_404(Skills, id=id)
-    return render(request, 'parserhhapp/post.html', context={'data': data})
+    title = 'статистика'
+    return render(request, 'parserhhapp/post.html', context={'data': data, 'title': title})
 
 @user_passes_test(lambda u: u.is_superuser)
 def create_post(request):
     if request.method == 'GET':
         form = PostForm()
-        return render(request, 'parserhhapp/posts.html', context={'form': form})
+        title = 'новый город'
+        return render(request, 'parserhhapp/posts.html', context={'form': form, 'title': title})
     else:
         form = PostForm(request.POST, files=request.FILES)
         if form.is_valid():
@@ -66,10 +96,12 @@ def create_post(request):
 class SkillListView(LoginRequiredMixin, ListView):
     model = Skills
     template_name = 'parserhhapp/skill_list.html'
+    paginate_by = 5
 
 class SkillDetailView(LoginRequiredMixin, DetailView):
     model = Skills
     template_name = 'parserhhapp/skill_list_detail.html'
+    paginate_by = 5
 
 
 class SkillCreateView(LoginRequiredMixin, CreateView):
@@ -77,6 +109,7 @@ class SkillCreateView(LoginRequiredMixin, CreateView):
     model = Skills
     success_url = reverse_lazy('parser:skill_list')
     template_name = 'parserhhapp/skill_list_create.html'
+    paginate_by = 5
 
 
 class SkillUpdateView(LoginRequiredMixin, UpdateView):
@@ -84,36 +117,44 @@ class SkillUpdateView(LoginRequiredMixin, UpdateView):
     model = Skills
     success_url = reverse_lazy('parser:skill_list')
     template_name = 'parserhhapp/skill_list_create.html'
+    paginate_by = 5
+
 
 class SkillDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'parserhhapp/skill_list_delete_confirm.html'
     model = Skills
     success_url = reverse_lazy('parser:skill_list')
+    paginate_by = 5
 
 
 
 class CityListView(LoginRequiredMixin, ListView):
     model = Cities
     template_name = 'parserhhapp/city_list.html'
+    paginate_by = 5
 
 
 class CityDetailView(LoginRequiredMixin, DetailView):
     model = Cities
     template_name = 'parserhhapp/city_list_detail.html'
+    paginate_by = 5
 
 class CityCreateView(LoginRequiredMixin, CreateView):
     fields = '__all__'
     model = Cities
     success_url = reverse_lazy('parser:city_list')
     template_name = 'parserhhapp/city_list_create.html'
+    paginate_by = 5
 
 class CityUpdateView(LoginRequiredMixin, UpdateView):
     fields = '__all__'
     model = Cities
     success_url = reverse_lazy('parser:city_list')
     template_name = 'parserhhapp/city_list_create.html'
+    paginate_by = 5
 
 class CityDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'parserhhapp/city_list_delete_confirm.html'
     model = Cities
     success_url = reverse_lazy('parser:city_list')
+    paginate_by = 5
