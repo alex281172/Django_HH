@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
+from django.utils.functional import cached_property
+
+
 class Skills(models.Model):
     name = models.CharField(max_length=30, verbose_name = 'навык')
     percent = models.CharField(max_length=30, verbose_name = 'доля')
@@ -10,6 +13,11 @@ class Skills(models.Model):
     class Meta:
         verbose_name = 'skill'
         verbose_name_plural = 'skills'
+
+    @cached_property
+    def skills_all_cached(self):
+        skills_cached = Skills.objects.all()
+        return skills_cached
 
 
     def __str__(self):

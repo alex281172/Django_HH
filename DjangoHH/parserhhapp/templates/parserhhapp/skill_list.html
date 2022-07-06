@@ -12,6 +12,7 @@
                 <a href="{% url 'parser:skill_list_detail' pk=item.pk %}">
                     <h2>
                         {{item.name}}
+                    </h2>
                     <h5>
                     <a href="{% url 'parser:skill_list_update' pk=item.pk %}">
                             Изменить
@@ -22,7 +23,7 @@
 
                     </a>
                     </h5>
-                    </h2>
+
 
             </li>
         {% endfor %}

@@ -7,11 +7,18 @@ from parserhhapp.models import Cities, Skills
 from parserhhapp.forms import RequestForm, PostForm
 from parserhhapp.parser_site import parser_site
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.cache import cache
+
 
 
 # Create your views here
 def main_view(request):
-    skills = Skills.objects.all()
+
+    skills = cache.get('skills')
+    if not skills:
+        skills = Skills.objects.all()
+        cache.set('skills', skills, 60)
+
     paginator = Paginator(skills, 5)
 
     page = request.GET.get('page')
@@ -29,7 +36,11 @@ def main_view(request):
     return render(request, 'parserhhapp/index.html', context={'skills': skills, 'title': title})
 
 def city_return(request):
-    cities = Cities.objects.all()
+    cities = cache.get('skills')
+    if not cities:
+        cities = Cities.objects.all()
+        cache.set('cities', cities, 60)
+
     paginator_city = Paginator(cities, 5)
 
     page = request.GET.get('page')
