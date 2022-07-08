@@ -36,7 +36,7 @@ def main_view(request):
     return render(request, 'parserhhapp/index.html', context={'skills': skills, 'title': title})
 
 def city_return(request):
-    cities = cache.get('skills')
+    cities = cache.get('cities')
     if not cities:
         cities = Cities.objects.all()
         cache.set('cities', cities, 60)

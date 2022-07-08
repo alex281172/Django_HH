@@ -14,8 +14,9 @@ SECRET_KEY = 'django-insecure-71x%ns-t_659elizwmq_a2j#c8!f2k35sf4d8ki#yl9dk5*cj7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+ADMINS = [('Alexey', 'alex281172@mail.ru')]
 
 # Application definition
 
@@ -30,6 +31,8 @@ INSTALLED_APPS = [
     'usersapp',
     'capapp',
     'debug_toolbar',
+    'rest_framework',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
@@ -131,4 +134,11 @@ INTERNAL_IPS = [
     # ...
 ]
 
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 

@@ -18,11 +18,23 @@ from django.urls import path, include
 
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework import routers, serializers, viewsets
+from parserhhapp.api_views import CitiesViewSet, SkillsViewSet
+
+
+router = routers.DefaultRouter()
+router.register(r'cities', CitiesViewSet)
+router.register(r'skills', SkillsViewSet)
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('parserhhapp.urls', namespace='parser')),
-    path('users/', include('usersapp.urls', namespace='users'))
+    path('users/', include('usersapp.urls', namespace='users')),
+    path('api-auth/', include('rest_framework.urls')),
+    # path('cities-api/', include(router.urls)),
+    path('api/v0/', include(router.urls)),
 ]
 
 if settings.DEBUG:

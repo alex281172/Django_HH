@@ -6,7 +6,7 @@ from django.utils.functional import cached_property
 
 
 class Skills(models.Model):
-    name = models.CharField(max_length=30, verbose_name = 'навык')
+    name = models.TextField(max_length=300, verbose_name = 'навык')
     percent = models.CharField(max_length=30, verbose_name = 'доля')
     count = models.CharField(max_length=30, null=True, verbose_name = 'количество')
 
@@ -42,10 +42,10 @@ class Skills(models.Model):
 
 
 class Cities(models.Model):
-    name = models.CharField(max_length=30, verbose_name = 'город')
+    name = models.TextField(max_length=300, verbose_name = 'город')
     percent = models.CharField(max_length=30, verbose_name = 'доля')
     count = models.CharField(max_length=30, null=True, verbose_name = 'количество')
-    image = models.ImageField(upload_to='coat', null=True, blank=True)
+    image = models.ImageField(upload_to='coat', null=True, blank=True, max_length=500)
 
 
     class Meta:
