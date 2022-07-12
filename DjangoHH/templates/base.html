@@ -38,7 +38,8 @@
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'parser:skill_list' %}">Список навыков на CBV</a></li>
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'parser:city_list' %}">Список городов на CBV</a></li>
                         {% if user.is_authenticated %}
-                        <li class="nav-item">Привет, {{user.username}}<a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'users:logout' %}">Выход</a></li>
+                        <li class="nav-item">Привет, <a href="{% url 'users:profile' pk=user.pk %}">{{user.username}}</a>
+                            <a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'users:logout' %}">Выход</a></li>
                         {% else %}
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'users:login' %}">Вход</a></li>
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'users:register' %}">Регистрация</a></li>
@@ -110,11 +111,14 @@
                 </div>
             </div>
         </footer>
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-        <script src="{% static 'js/scripts.js' %}"></script>
-        <script src="{% static 'js/my.js' %}"></script>
+<!-- Bootstrap core JavaScript -->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/clean-blog.min.js' %}"></script>
+<script src="{% static 'js/my.js' %}"></script>
+<script src="{% static 'js/my_ajax.js' %}"></script>
+
+
     </body>
 </html>
 

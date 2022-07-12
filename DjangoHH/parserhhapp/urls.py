@@ -21,6 +21,7 @@ urlpatterns = [
     path('skill_list_create/', views.SkillCreateView.as_view(), name='skill_list_create'),
     path('skill_list_update/<int:pk>/', views.SkillUpdateView.as_view(), name='skill_list_update'),
     path('skill_list_delete/<int:pk>/', views.SkillDeleteView.as_view(), name='skill_list_delete'),
+    path('simple/', views.SimpleMainAjax.as_view(), name='simple_ajax'),
 
 ]
 

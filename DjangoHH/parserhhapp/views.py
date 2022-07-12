@@ -2,12 +2,13 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from parserhhapp.models import Cities, Skills
 from parserhhapp.forms import RequestForm, PostForm
 from parserhhapp.parser_site import parser_site
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.cache import cache
+
 
 
 
@@ -169,3 +170,8 @@ class CityDeleteView(LoginRequiredMixin, DeleteView):
     model = Cities
     success_url = reverse_lazy('parser:city_list')
     paginate_by = 5
+
+
+class SimpleMainAjax(TemplateView):
+    template_name = 'parserhhapp/simple.html'
+

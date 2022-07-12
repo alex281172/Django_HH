@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>simple.html</title>
+</head>
+<body>
+    <button type="button" id="cities">Города</button>
+    <hr>
+    <button type="button" id="skills">Навыки</button>
+    <hr>
+    <button type="button" id="all">Все</button>
+
+    <ul id="div_cities"></ul>
+    <ul id="div_skills"></ul>
+
+
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'js/my_ajax.js' %}"></script>
+
+</body>
+</html>
