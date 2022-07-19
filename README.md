@@ -1,4 +1,6 @@
 # Django_HH
 Парсер данных с hh.ru на django
-Спарсенные данные по городам и скилам записывает в db.sqlite3
-Запуск командой parser 
+Запуск
+PS ....\Django_HH\DjangoHH> python manage.py runserver
+
+адрес: 127.0.0.1:8000
