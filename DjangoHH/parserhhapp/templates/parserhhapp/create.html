@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Данные для запроса
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-8 col-md-10 mx-auto">
+        <p>Данные для парсера</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <h3> {{ form.as_p }} </h3>
+            <button type="submit" class="btn btn-primary" id="sendMessageButton">ПАРСИМ</button>
+        </form>
+
+            *)  - необязательный параметр
+            **) - желательно не более 100
+    </div>
+</div>
+
+
+{% endblock %}

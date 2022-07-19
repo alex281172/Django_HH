@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}
+ Города
+{% endblock %}
+
+{% block content %}
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    {% for item in cities %}
+
+                    <!-- Post preview-->
+                    <div class="post-preview">
+                            <img src="{{item.image}}" >
+                            <h2 class="post-title"> {{item.name}} {{item.percent}} {{item.count}}</h2>
+<!--                            <h3 class="post-subtitle">{{item.percent}} </h3>-->
+<!--                            <h3 class="post-subtitle">{{item.count}} </h3>-->
+                        </a>
+
+                    </div>
+                    <!-- Divider-->
+                    <hr class="my-4" />
+                    {% endfor %}
+
+                                        <!-- Pager-->
+                    <div class="clearfix">
+                        <div class="pagination">
+
+                        <span class="step-links">
+                            {% if cities.has_previous %}
+                                <a class="btn btn-primary float-right"
+                                    href="?page={{ cities.previous_page_number }}">&larr; Назад</a>
+                            {% endif %}
+
+                                <span class="current">
+                                    Page {{ cities.number }} of {{ cities.paginator.num_pages }}.
+                                </span>
+
+                            {% if cities.has_next %}
+
+                                    <a class="btn btn-primary float-right"
+                                       href="?page={{ cities.next_page_number }}">Вперед &rarr;</a>
+
+                            {% endif %}
+
+
+                             </span>
+                        </div>
+                    </div>
+<!-- Pager-->
+
+                    <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="{% url 'parser:data' %}">Данные для парсера HH.RU</a></div>
+                </div>
+            </div>
+{% endblock %}

@@ -25,18 +25,6 @@ class Command(BaseCommand):
         DOMAIN = 'https://api.hh.ru/'
         url_vacancies = f'{DOMAIN}vacancies'
 
-        # f = open('result_top_10.txt', 'w')
-        # f.write('')
-        # f.close()
-        # f = open('top_10.txt', 'w')
-        # f.write('')
-        # f.close()
-        # f = open('city_top_10.txt', 'w')
-        # f.write('')
-        # f.close()
-        # f = open('city_head_10.txt', 'w')
-        # f.write('')
-        # f.close()
 
         my_skill_list = []
         my_city_list = []
@@ -162,71 +150,4 @@ class Command(BaseCommand):
 
             Cities.objects.create(name=name, count=count, percent=percent)
 
-
-        # result_city = {
-        #     'keywords': proff,
-        #     'dispersion': total_city
-        # }
-        #
-        # result_city_json = json.dumps(result_city, ensure_ascii=False, indent=4)
-        #
-        # f = open('city_head_10.txt', 'a')
-        # f.write('Всего городов: ')
-        # f.write(str(lens_end_city))
-        # f.write('\n')
-        #
-        # f = open('city_top_10.txt', 'a')
-        # for counter in total_city:
-        #     f.write(counter['name'])
-        #     f.write(' ')
-        #     f.write(str(counter['percent']))
-        #     f.write(' ')
-        #     f.write(str(counter['count']))
-        #     f.write('\n')
-        # f.close()
-        #
-        # f = open('top_10.txt', 'a')
-        # f.write('Профессия: ')
-        # f.write(proff)
-        # f.write('\n')
-        # f.write('Город: ')
-        # f.write(region)
-        # f.write('\n')
-        # f.write('Всего навыков: ')
-        # f.write(result_skill['count'])
-        # f.write('\n')
-        #
-        # f = open('result_top_10.txt', 'a')
-        # for counter in total_skill:
-        #     f.write(counter['name'])
-        #     f.write(' ')
-        #     f.write(str(counter['percent']))
-        #     f.write(' ')
-        #     f.write(str(counter['count']))
-        #     f.write('\n')
-        # f.close()
-        #
-        # f = open('result_10.json', 'w')
-        # f.write(result_skill_json)
-        # f.close()
-        #
-        # f = open('result.txt', 'w')
-        # f.write(str(result_skill))
-        # f.close()
-        # print('Успешно создан файл result.txt со списком необходимых навыков')
-        #
-        # f = open('result.json', 'w')
-        # f.write(result_skill_json)
-        # f.close()
-        # print('Успешно создан файл result.fson со списком необходимых навыков')
-        #
-        # f = open('city.txt', 'w')
-        # f.write(str(result_city))
-        # f.close()
-        #
-        # print('Успешно создан файл city.txt со списком городов')
-        # f = open('city.json', 'w')
-        # f.write(result_city_json)
-        # f.close()
-        # print('Успешно создан файл city.fson со списком городов')
 

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{object.name}}
+{% endblock %}
+
+{% block content %}
+<ul>
+
+
+            <h1>
+                {{object.name}}
+            </h1>
+
+
+
+</ul>
+            Вы уверены?
+            <form method="post">
+            {% csrf_token %}
+<div>            <button type="submit" class="btn btn-danger">ДА</button>
+ <a class="btn btn-primary text-uppercase" href="{% url 'parser:city_list' %}">ОТМЕНА</a></div>
+        </form>
+
+
+
+{% endblock %}
