@@ -52,12 +52,21 @@ def parser_site(pages, proff, region):
                 vacancy_count += 1
                 # Сколько ваканский спарсили на текущей странице
                 print(vacancy_count)
-                # Вытаскиваем нужный url (где есть skill) для дальнейшей обработки
+                # Вытаскиваем нужный url (где есть skill) для дальнейшей обработки    # 'https://api.hh.ru/vacancies'
                 result = requests.get(url_vacancies, params=params).json()
+
                 url_skill = result['items'][k]['url']
+
                 my_result = requests.get(url_skill).json()
+
+                # print(result)
+                print(url_skill)
+                # print(my_result)
+
                 # Записываем Skill в список
                 my_skill = my_result['key_skills']
+                print(my_skill)
+
                 lens = len(my_skill)
 
                 if len(my_skill) != 0:
