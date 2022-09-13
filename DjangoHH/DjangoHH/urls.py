@@ -19,12 +19,14 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers, serializers, viewsets
-from parserhhapp.api_views import CitiesViewSet, SkillsViewSet
-
+from parserhhapp.api_views import CitiesViewSet, SkillsViewSet, CitiesSalaryViewSet
+from parserhhapp.views import cloud
 
 router = routers.DefaultRouter()
 router.register(r'cities', CitiesViewSet)
 router.register(r'skills', SkillsViewSet)
+router.register(r'cities_salary', CitiesSalaryViewSet)
+
 
 
 
@@ -50,3 +52,7 @@ if settings.DEBUG:
         # url(r'^__debug__/', include(debug_toolbar.urls)),
 
     ] + urlpatterns
+
+# включаем возможность обработки картинок
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
