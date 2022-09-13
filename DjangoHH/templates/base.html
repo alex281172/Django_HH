@@ -26,7 +26,7 @@
     <body>
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
-            <div class="container px-4 px-lg-5">
+            <div class="container px-15 px-lg-10">
 
 
                 <div class="collapse navbar-collapse" id="navbarResponsive">
@@ -37,6 +37,9 @@
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'parser:post' %}">Создание города</a></li>
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'parser:skill_list' %}">Список навыков на CBV</a></li>
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'parser:city_list' %}">Список городов на CBV</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'parser:salary' %}">Рейтинг зарплат</a></li>
+                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'parser:cloud' %}">ОБЛАКО</a></li>
+<!--                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'parser:cloud_skill' %}">Облако навыков</a></li>-->
                         {% if user.is_authenticated %}
                         <li class="nav-item">Привет, <a href="{% url 'users:profile' pk=user.pk %}">{{user.username}}</a>
                             <a class="nav-link px-lg-3 py-3 py-lg-4" href="{% url 'users:logout' %}">Выход</a></li>

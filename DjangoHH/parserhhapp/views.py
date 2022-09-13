@@ -3,11 +3,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
-from parserhhapp.models import Cities, Skills
+from parserhhapp.models import Cities, Skills, CitiesSalary, SkillCloud
 from parserhhapp.forms import RequestForm, PostForm
 from parserhhapp.parser_site import parser_site
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.cache import cache
+from django.core.files.storage import FileSystemStorage
 
 
 
@@ -175,3 +176,20 @@ class CityDeleteView(LoginRequiredMixin, DeleteView):
 class SimpleMainAjax(TemplateView):
     template_name = 'parserhhapp/simple.html'
 
+
+class CitySalaryListView(LoginRequiredMixin, ListView):
+    model = CitiesSalary
+    template_name = 'parserhhapp/salary.html'
+    # paginate_by = 5
+
+
+def cloud(request):
+    data = SkillCloud.objects.all()
+
+
+    return render(request, 'parserhhapp/cloud.html', {'data': data})
+
+def cloud_skill(request):
+    data = SkillCloud.objects.all()
+
+    return render(request, 'parserhhapp/cloud_skill.html', {'data': data})
