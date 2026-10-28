@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Django: local databases and generated files
+*.sqlite3
+*.db
+DjangoHH/media/cloud*.png
+DjangoHH/media/coat/
+
+# Tests
+.coverage
+htmlcov/
+
+# IDE
+.idea/
+.vscode/
+
+# Secrets
+.env

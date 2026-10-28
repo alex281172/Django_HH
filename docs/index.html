@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Парсер вакансий hh.ru – Django_HH</title>
+<meta name="description" content="Веб-приложение на Django: собирает вакансии hh.ru по профессии и городу и показывает востребованные навыки, города и зарплаты.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #F3F6F5; --sheet: #FFFFFF; --ink: #1B2626; --muted: #546362;
+  --rule: #D3DCDA; --track: #E4EBE9; --bar: #00897B; --link: #00665D;
+  --code-bg: #E7EEEC;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #121B1A; --sheet: #1A2726; --ink: #E4EDEB; --muted: #9DB0AD;
+    --rule: #2E3D3B; --track: #263634; --bar: #2AA99B; --link: #6ED3C6;
+    --code-bg: #1E2D2C;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 17px/1.6 Onest, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+a { color: var(--link); text-underline-offset: 3px; }
+a:focus-visible, summary:focus-visible, button:focus-visible { outline: 3px solid var(--bar); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+.top { display: flex; justify-content: space-between; align-items: center; padding: 22px 0; font-weight: 500; }
+.top .repo { font-size: 15px; }
+
+.hero { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 56px; align-items: start; padding: 32px 0 72px; }
+h1 { font-size: clamp(40px, 6vw, 68px); line-height: 1.02; letter-spacing: -0.035em; font-weight: 700; margin: 8px 0 24px; }
+.lead { font-size: 19px; max-width: 34em; margin: 0 0 20px; }
+.origin { color: var(--muted); font-size: 15px; margin: 0 0 28px; max-width: 34em; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn { display: inline-block; padding: 12px 20px; border-radius: 8px; font-weight: 500; text-decoration: none; font-size: 16px; }
+.btn.primary { background: var(--ink); color: var(--paper); }
+.btn.ghost { border: 1.5px solid var(--rule); color: var(--ink); }
+
+.sheet { background: var(--sheet); border-radius: 14px; padding: 28px 32px 30px; box-shadow: 0 1px 0 var(--rule), 0 18px 40px -28px rgba(10, 40, 38, .45); }
+.sheet-head { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: baseline; margin-bottom: 18px; }
+.sheet-head h2 { margin: 0; font-size: 20px; letter-spacing: -0.01em; }
+.sheet-head p { margin: 0; color: var(--muted); font-size: 14px; }
+
+.bars { list-style: none; margin: 0; padding: 0; }
+.bars li { display: grid; grid-template-columns: minmax(0, 11em) minmax(0, 1fr) 6.5em; align-items: center; gap: 14px; padding: 7px 0; }
+.bars .name { font-weight: 500; overflow-wrap: anywhere; }
+.bars .track { height: 10px; background: var(--track); border-radius: 4px; overflow: hidden; }
+.bars .fill { display: block; height: 100%; background: var(--bar); border-radius: 0 4px 4px 0; }
+.bars .val { text-align: right; font-weight: 500; white-space: nowrap; }
+.bars .val small { display: block; color: var(--muted); font-weight: 400; font-size: 13px; line-height: 1.2; }
+.hero-bars li { padding: 6px 0; }
+.hero-bars li:first-child .name { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; }
+.hero-bars li:first-child .track { height: 16px; }
+.hero-bars li:nth-child(2) .name, .hero-bars li:nth-child(3) .name { font-size: 20px; }
+.bars .val small { font-variant-numeric: tabular-nums; }
+
+section { padding: 56px 0; border-top: 1px solid var(--rule); }
+section > h2 { font-size: 32px; letter-spacing: -0.02em; line-height: 1.15; margin: 0 0 10px; }
+.intro { color: var(--muted); max-width: 44em; margin: 0 0 32px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+.two h3 { font-size: 19px; margin: 0 0 6px; }
+.two .note { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
+
+figure { margin: 0; }
+.clouds { display: grid; grid-template-columns: 3fr 2fr; gap: 24px; align-items: start; }
+.clouds img { width: 100%; height: auto; display: block; background: #fff; border-radius: 12px; }
+figcaption { color: var(--muted); font-size: 14px; margin-top: 10px; }
+
+details { margin-top: 32px; }
+summary { cursor: pointer; font-weight: 500; color: var(--link); }
+table { border-collapse: collapse; width: 100%; max-width: 640px; margin-top: 16px; font-size: 15px; }
+th, td { text-align: left; padding: 6px 12px 6px 0; border-bottom: 1px solid var(--rule); }
+th { color: var(--muted); font-weight: 500; }
+td:nth-child(n+3), th:nth-child(n+3) { text-align: right; }
+
+.features { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 56px; margin: 0; }
+.features div { padding: 18px 0; border-bottom: 1px solid var(--rule); }
+.features dt { font-weight: 700; margin-bottom: 4px; }
+.features dd { margin: 0; color: var(--muted); max-width: 36em; }
+code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .9em; }
+pre { background: var(--code-bg); border-radius: 10px; padding: 20px 22px; overflow-x: auto; font-size: 14px; line-height: 1.7; margin: 0 0 16px; }
+.stack { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.stack li { border: 1.5px solid var(--rule); border-radius: 999px; padding: 4px 14px; font-size: 15px; }
+
+.status { max-width: 46em; }
+footer { padding: 40px 0 56px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 15px; }
+footer p { margin: 4px 0; }
+
+@media (max-width: 880px) {
+  .hero, .two, .clouds, .features { grid-template-columns: 1fr; }
+  .hero { gap: 36px; padding-bottom: 56px; }
+  .two { gap: 40px; }
+}
+@media (max-width: 520px) {
+  .wrap { padding: 0 16px; }
+  .sheet { padding: 22px 18px; }
+  .bars li { grid-template-columns: minmax(0, 1fr) 5.5em; gap: 4px 12px; }
+  .bars .track { grid-column: 1 / -1; grid-row: 2; }
+  .hero-bars li:first-child .name { font-size: 24px; }
+  section > h2 { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span>Django_HH</span>
+    <a class="repo" href="https://github.com/alex281172/Django_HH">Код на GitHub</a>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div>
+        <h1>Парсер вакансий hh.ru</h1>
+        <p class="lead">Веб-приложение на Django. Вы указываете профессию, город и сколько вакансий разобрать – оно собирает вакансии через API hh.ru и показывает, какие навыки, города и зарплаты встречаются чаще всего.</p>
+        <p class="origin">Дипломный проект курса «Python developer», Университет искусственного интеллекта, 2022. Ниже – результат одного запроса, сохранённый в базе проекта.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://github.com/alex281172/Django_HH">Открыть код</a>
+          <a class="btn ghost" href="#run">Как запустить</a>
+        </div>
+      </div>
+
+      <div class="sheet">
+        <div class="sheet-head">
+          <h2>Самые частые навыки</h2>
+          <p>20 вакансий, 53 навыка, 107 упоминаний</p>
+        </div>
+        <ol class="bars hero-bars" aria-label="Десять самых частых навыков">
+<li title="Python: 18, 16.8%"><span class="name">Python</span><span class="track"><span class="fill" style="width:100.0%"></span></span><span class="val">18<small>16.8%</small></span></li>
+<li title="PostgreSQL: 7, 6.5%"><span class="name">PostgreSQL</span><span class="track"><span class="fill" style="width:38.9%"></span></span><span class="val">7<small>6.5%</small></span></li>
+<li title="Django Framework: 7, 6.5%"><span class="name">Django Framework</span><span class="track"><span class="fill" style="width:38.9%"></span></span><span class="val">7<small>6.5%</small></span></li>
+<li title="Git: 6, 5.6%"><span class="name">Git</span><span class="track"><span class="fill" style="width:33.3%"></span></span><span class="val">6<small>5.6%</small></span></li>
+<li title="Linux: 6, 5.6%"><span class="name">Linux</span><span class="track"><span class="fill" style="width:33.3%"></span></span><span class="val">6<small>5.6%</small></span></li>
+<li title="SQL: 4, 3.7%"><span class="name">SQL</span><span class="track"><span class="fill" style="width:22.2%"></span></span><span class="val">4<small>3.7%</small></span></li>
+<li title="Redis: 3, 2.8%"><span class="name">Redis</span><span class="track"><span class="fill" style="width:16.7%"></span></span><span class="val">3<small>2.8%</small></span></li>
+<li title="RabbitMQ: 3, 2.8%"><span class="name">RabbitMQ</span><span class="track"><span class="fill" style="width:16.7%"></span></span><span class="val">3<small>2.8%</small></span></li>
+<li title="asyncio: 3, 2.8%"><span class="name">asyncio</span><span class="track"><span class="fill" style="width:16.7%"></span></span><span class="val">3<small>2.8%</small></span></li>
+<li title="MongoDB: 3, 2.8%"><span class="name">MongoDB</span><span class="track"><span class="fill" style="width:16.7%"></span></span><span class="val">3<small>2.8%</small></span></li>
+</ol>
+      </div>
+    </div>
+
+    <section aria-labelledby="where">
+      <h2 id="where">Где ищут и сколько платят</h2>
+      <p class="intro">Те же 20 вакансий. Приложение считает долю каждого города и среднюю зарплату по городу.</p>
+      <div class="two">
+        <div>
+          <h3>Вакансии по городам</h3>
+          <p class="note">Число вакансий и доля от общего числа</p>
+          <ol class="bars " aria-label="Вакансии по городам">
+<li title="Москва: 8, 40.0%"><span class="name">Москва</span><span class="track"><span class="fill" style="width:100.0%"></span></span><span class="val">8<small>40.0%</small></span></li>
+<li title="Санкт-Петербург: 6, 30.0%"><span class="name">Санкт-Петербург</span><span class="track"><span class="fill" style="width:75.0%"></span></span><span class="val">6<small>30.0%</small></span></li>
+<li title="Алматы: 2, 10.0%"><span class="name">Алматы</span><span class="track"><span class="fill" style="width:25.0%"></span></span><span class="val">2<small>10.0%</small></span></li>
+<li title="Новосибирск: 2, 10.0%"><span class="name">Новосибирск</span><span class="track"><span class="fill" style="width:25.0%"></span></span><span class="val">2<small>10.0%</small></span></li>
+<li title="Минск: 1, 5.0%"><span class="name">Минск</span><span class="track"><span class="fill" style="width:12.5%"></span></span><span class="val">1<small>5.0%</small></span></li>
+<li title="Екатеринбург: 1, 5.0%"><span class="name">Екатеринбург</span><span class="track"><span class="fill" style="width:12.5%"></span></span><span class="val">1<small>5.0%</small></span></li>
+</ol>
+        </div>
+        <div>
+          <h3>Средняя зарплата</h3>
+          <p class="note">Только вакансии с зарплатой в рублях. Если указана одна граница, берётся она, иначе середина вилки.</p>
+          <ol class="bars " aria-label="Средняя зарплата по городам">
+<li title="Москва: 310 000 ₽"><span class="name">Москва</span><span class="track"><span class="fill" style="width:100.0%"></span></span><span class="val">310 000 ₽</span></li>
+<li title="Санкт-Петербург: 206 666 ₽"><span class="name">Санкт-Петербург</span><span class="track"><span class="fill" style="width:66.7%"></span></span><span class="val">206 666 ₽</span></li>
+<li title="Екатеринбург: 200 000 ₽"><span class="name">Екатеринбург</span><span class="track"><span class="fill" style="width:64.5%"></span></span><span class="val">200 000 ₽</span></li>
+<li title="Новосибирск: 80 000 ₽"><span class="name">Новосибирск</span><span class="track"><span class="fill" style="width:25.8%"></span></span><span class="val">80 000 ₽</span></li>
+</ol>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="clouds">
+      <h2 id="clouds">Облака навыков и городов</h2>
+      <p class="intro">Приложение строит облака библиотекой wordcloud: чем чаще слово, тем крупнее.</p>
+      <div class="clouds">
+        <figure>
+          <img src="img/cloud-skills.png" width="1200" height="800" alt="Облако навыков: крупнее всего Python, PostgreSQL, Django Framework, Git, Linux">
+          <figcaption>Навыки из карточек вакансий</figcaption>
+        </figure>
+        <figure>
+          <img src="img/cloud-cities.png" width="1200" height="480" alt="Облако городов: крупнее всего Москва и Санкт-Петербург">
+          <figcaption>Города вакансий</figcaption>
+        </figure>
+      </div>
+      <details>
+        <summary>Все 53 навыка таблицей</summary>
+        <table>
+          <thead><tr><th>№</th><th>Навык</th><th>Упоминаний</th><th>Доля</th></tr></thead>
+          <tbody>
+<tr><td>1</td><td>Python</td><td>18</td><td>16.8%</td></tr>
+<tr><td>2</td><td>PostgreSQL</td><td>7</td><td>6.5%</td></tr>
+<tr><td>3</td><td>Django Framework</td><td>7</td><td>6.5%</td></tr>
+<tr><td>4</td><td>Git</td><td>6</td><td>5.6%</td></tr>
+<tr><td>5</td><td>Linux</td><td>6</td><td>5.6%</td></tr>
+<tr><td>6</td><td>SQL</td><td>4</td><td>3.7%</td></tr>
+<tr><td>7</td><td>Redis</td><td>3</td><td>2.8%</td></tr>
+<tr><td>8</td><td>RabbitMQ</td><td>3</td><td>2.8%</td></tr>
+<tr><td>9</td><td>asyncio</td><td>3</td><td>2.8%</td></tr>
+<tr><td>10</td><td>MongoDB</td><td>3</td><td>2.8%</td></tr>
+<tr><td>11</td><td>Flask</td><td>2</td><td>1.9%</td></tr>
+<tr><td>12</td><td>Английский язык</td><td>2</td><td>1.9%</td></tr>
+<tr><td>13</td><td>JavaScript</td><td>2</td><td>1.9%</td></tr>
+<tr><td>14</td><td>Kafka</td><td>2</td><td>1.9%</td></tr>
+<tr><td>15</td><td>Rust</td><td>1</td><td>0.9%</td></tr>
+<tr><td>16</td><td>Лидерство</td><td>1</td><td>0.9%</td></tr>
+<tr><td>17</td><td>golang</td><td>1</td><td>0.9%</td></tr>
+<tr><td>18</td><td>go</td><td>1</td><td>0.9%</td></tr>
+<tr><td>19</td><td>Pandas</td><td>1</td><td>0.9%</td></tr>
+<tr><td>20</td><td>Аналитические способности</td><td>1</td><td>0.9%</td></tr>
+<tr><td>21</td><td>WhatsApp</td><td>1</td><td>0.9%</td></tr>
+<tr><td>22</td><td>microservices architecture</td><td>1</td><td>0.9%</td></tr>
+<tr><td>23</td><td>Bash</td><td>1</td><td>0.9%</td></tr>
+<tr><td>24</td><td>Docker-compose</td><td>1</td><td>0.9%</td></tr>
+<tr><td>25</td><td>SQLAlchemy</td><td>1</td><td>0.9%</td></tr>
+<tr><td>26</td><td>Django</td><td>1</td><td>0.9%</td></tr>
+<tr><td>27</td><td>Architecture</td><td>1</td><td>0.9%</td></tr>
+<tr><td>28</td><td>Microservices</td><td>1</td><td>0.9%</td></tr>
+<tr><td>29</td><td>Kubernetes</td><td>1</td><td>0.9%</td></tr>
+<tr><td>30</td><td>Docker</td><td>1</td><td>0.9%</td></tr>
+<tr><td>31</td><td>Celery</td><td>1</td><td>0.9%</td></tr>
+<tr><td>32</td><td>HTTP</td><td>1</td><td>0.9%</td></tr>
+<tr><td>33</td><td>HTTPS</td><td>1</td><td>0.9%</td></tr>
+<tr><td>34</td><td>AMQP</td><td>1</td><td>0.9%</td></tr>
+<tr><td>35</td><td>Websocket</td><td>1</td><td>0.9%</td></tr>
+<tr><td>36</td><td>GRPC</td><td>1</td><td>0.9%</td></tr>
+<tr><td>37</td><td>MySQL</td><td>1</td><td>0.9%</td></tr>
+<tr><td>38</td><td>FASTAPI</td><td>1</td><td>0.9%</td></tr>
+<tr><td>39</td><td>Высоконагруженные системы</td><td>1</td><td>0.9%</td></tr>
+<tr><td>40</td><td>XML</td><td>1</td><td>0.9%</td></tr>
+<tr><td>41</td><td>MS SQL</td><td>1</td><td>0.9%</td></tr>
+<tr><td>42</td><td>NoSQL</td><td>1</td><td>0.9%</td></tr>
+<tr><td>43</td><td>API</td><td>1</td><td>0.9%</td></tr>
+<tr><td>44</td><td>STL</td><td>1</td><td>0.9%</td></tr>
+<tr><td>45</td><td>C++</td><td>1</td><td>0.9%</td></tr>
+<tr><td>46</td><td>C#</td><td>1</td><td>0.9%</td></tr>
+<tr><td>47</td><td>Анализ данных</td><td>1</td><td>0.9%</td></tr>
+<tr><td>48</td><td>OpenCV</td><td>1</td><td>0.9%</td></tr>
+<tr><td>49</td><td>Tensorflow</td><td>1</td><td>0.9%</td></tr>
+<tr><td>50</td><td>Computer Vision</td><td>1</td><td>0.9%</td></tr>
+<tr><td>51</td><td>Machine Learning</td><td>1</td><td>0.9%</td></tr>
+<tr><td>52</td><td>Huawei</td><td>1</td><td>0.9%</td></tr>
+<tr><td>53</td><td>Open Vino</td><td>1</td><td>0.9%</td></tr>
+          </tbody>
+        </table>
+      </details>
+    </section>
+
+    <section aria-labelledby="inside">
+      <h2 id="inside">Что внутри</h2>
+      <p class="intro">Помимо парсера в проекте есть учётные записи, редактирование данных и REST API.</p>
+      <dl class="features">
+        <div><dt>Сбор данных</dt><dd>Запросы к API hh.ru постранично, по 20 вакансий. Навыки берутся из карточки каждой вакансии, затем считаются доли, рейтинги и облака слов.</dd></div>
+        <div><dt>Данные и редактирование</dt><dd>Модели Django и SQLite. Списки навыков и городов на class-based views: просмотр, создание, правка, удаление. Админка Django.</dd></div>
+        <div><dt>Пользователи</dt><dd>Своя модель пользователя, регистрация, вход, профиль. В профиле можно выпустить и обновить API-токен, в том числе через AJAX.</dd></div>
+        <div><dt>REST API</dt><dd>Django REST Framework: <code>/api/v0/cities/</code>, <code>/api/v0/skills/</code>, <code>/api/v0/cities_salary/</code>. Города и зарплаты читают все, меняет только администратор. Навыки доступны после входа по сессии, логину или токену.</dd></div>
+        <div><dt>Тесты</dt><dd>20 тестов на модели и представления: unittest и mixer.</dd></div>
+        <div><dt>Стек</dt><dd>
+          <ul class="stack">
+            <li>Python 3.10</li><li>Django 4.0</li><li>Django REST Framework</li><li>SQLite</li><li>requests</li><li>wordcloud</li><li>matplotlib</li><li>Bootstrap</li><li>jQuery</li>
+          </ul></dd></div>
+      </dl>
+    </section>
+
+    <section id="run" aria-labelledby="run-h">
+      <h2 id="run-h">Как запустить</h2>
+      <p class="intro">Нужен Python 3.10.</p>
+<pre><code>git clone https://github.com/alex281172/Django_HH.git
+cd Django_HH
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+cd DjangoHH
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver</code></pre>
+      <p>Затем откройте <code>http://127.0.0.1:8000</code> и войдите под созданным пользователем.</p>
+    </section>
+
+    <section aria-labelledby="status">
+      <h2 id="status">Почему здесь сохранённые данные</h2>
+      <div class="status">
+        <p>В 2026 году hh.ru закрыл анонимный доступ к поиску вакансий через API: теперь нужна авторизация приложения. Поэтому на этой странице показан результат, сохранённый в 2022 году, а не живой запрос. Код парсера в репозитории остался в исходном виде.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Автор – Алексей Савотченко, <a href="https://github.com/alex281172">github.com/alex281172</a></p>
+    <p>Проект 2022 года. Страница с демо собрана в 2026.</p>
+  </footer>
+</div>
+</body>
+</html>
